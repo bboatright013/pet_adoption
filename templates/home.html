@@ -1,0 +1,82 @@
+{% extends 'base.html'%}
+{%block title%}Home Page{%endblock%}
+
+{%block search %}
+<form class="form-inline" action='/pets' method="POST" style="justify-self: end;">
+    {{ form.hidden_tag() }} 
+  
+    {% for field in form
+           if field.widget.input_type != 'hidden' %}
+    {{ field(class_="form-control mr-sm-2") }}
+        {% for error in field.errors %}
+          {{ error }}
+        {% endfor %}
+  
+    {% endfor %}
+  
+    <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
+    </form>
+{%endblock%}
+
+{% block flashzone %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="container">
+    {% for message in messages %}
+    <div class="row">    <span class="alert bg-info m-2">{{ message }}</span></div>
+
+  {% endfor %}
+  </div>
+
+  {% endif %}
+{% endwith %}
+{% endblock %}
+
+
+{%block main%}
+
+    <div class="container">
+        <div class="row row-cols-3">
+        {% for pet in pets%}
+        {% if pet.available == True %}
+          <div class="col">
+            <figure class="figure m-2">
+                {% if pet.photo_url %}
+                <img src="{{pet.photo_url}}" class="figure-img img-fluid rounded" alt="{{pet.species}} named {{pet.name}}">
+                {% else %}
+                <div style="width:100%; height:150px; display:flex; border: 1px solid black; border-radius:4px; justify-content:center; align-items:center "><P>Image <br> Unavailable</P></div>
+                {% endif %}
+                <figcaption class="figure-caption"><a href="/pets/{{pet.id}}">{{pet.name}}</a> the {{pet.species}} {%if pet.available == True %}<b>is available!</b> {% else %} has been adopted {% endif %}</figcaption>
+              </figure>
+          </div>
+          {% endif %}
+        {%endfor%}
+        </div>
+      </div>
+
+      <h3 style="text-align: center;">Our successfully adopted animals!</h3>
+
+      <div class="container">
+        <div class="row row-cols-3">
+        {% for pet in pets%}
+        {% if pet.available == False %}
+          <div class="col">
+            <figure class="figure m-2">
+                {% if pet.photo_url %}
+                <img src="{{pet.photo_url}}" class="figure-img img-fluid rounded" alt="{{pet.species}} named {{pet.name}}">
+                {% else %}
+                <div style="width:100%; height:150px; display:flex; border: 1px solid black; border-radius:4px; justify-content:center; align-items:center "><P>Image <br> Unavailable</P></div>
+                {% endif %}
+                <figcaption class="figure-caption"><a href="/pets/{{pet.id}}">{{pet.name}}</a> the {{pet.species}} {%if pet.available == True %}<b>is available!</b> {% else %} has been adopted {% endif %}</figcaption>
+              </figure>
+          </div>
+          {% endif %}
+        {%endfor%}
+        </div>
+      </div>
+
+
+
+
+
+{%endblock%}

@@ -1,0 +1,78 @@
+{% extends 'base.html'%}
+{%block title%}Results Page{%endblock%}
+
+{%block search %}
+<form class="form-inline" action='/pets' method="POST" style="justify-self: end;">
+    {{ form.hidden_tag() }} 
+  
+    {% for field in form
+           if field.widget.input_type != 'hidden' %}
+    {{ field(class_="form-control mr-sm-2") }}
+        {% for error in field.errors %}
+          {{ error }}
+        {% endfor %}
+  
+    {% endfor %}
+  
+    <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
+{%endblock%}
+
+
+{% block flashzone %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="container">
+    {% for message in messages %}
+    <div class="row"><span class="alert alert-info m-2" role="alert">{{ message }}</span></div>
+  {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+{% endblock %}
+
+
+{%block main%}
+
+    <div class="container">
+            <figure class="figure m-2">
+                {% if pet.photo_url %}
+                <img src="{{pet.photo_url}}" class="figure-img img-fluid rounded" alt="{{pet.species}} named {{pet.name}}">
+                {% else %}
+                <div style="width:150px; height:150px; display:flex; border: 1px solid black; border-radius:4px"><P style="align-content:center;justify-content:center">Image <br> Unavailable</P></div>
+                {% endif %}
+                <figcaption class="figure-caption"><a href="/pets/{{pet.id}}">{{pet.name}}</a> the {{pet.species}} {%if pet.available == True %}<b>is available!</b> {% else %} has been adopted {% endif %}</figcaption>
+                {% if pet.available == False%} 
+                <p>Would you like to remove {{pet.name}}?</p>
+                <form action="/delete/{{pet.id}}" method="POST">
+                    <button class="btn bg-danger">Delete</button>
+                </form>
+
+                {% endif %}
+              </figure>
+          </div>
+
+
+      <div class="container">
+        <div class="mx-auto">
+                <form method="POST">
+                    {{ editForm.hidden_tag() }} <!--add type=hidden form fields -->
+                  
+                    {% for field in editForm
+                           if field.widget.input_type != 'hidden' %}
+                    <div class="row m-1">
+                    <div class="col-4">
+                    {{field.label(class_="mt-1")}}
+                    </div>
+                    <div class="col-8">
+                        {{ field(class_="form-control") }}
+                        {% for error in field.errors %}
+                        <div>{{ error }}</div> 
+                        {% endfor %}
+                    </div>
+                </div>
+                    {% endfor %}
+                    <button class="btn btn-outline-success my-1">Edit</button>
+                    </form>
+            </div>
+        </div>
+{%endblock%}
